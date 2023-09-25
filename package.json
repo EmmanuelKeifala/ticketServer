@@ -1,0 +1,48 @@
+{
+	"name": "lms-server",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "ts-node-dev --respawn --transpile-only server.ts"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/EmmanuelKeifala/LMS-SERVER.git"
+	},
+	"author": "EmmanuelKeifala",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/EmmanuelKeifala/LMS-SERVER/issues"
+	},
+	"homepage": "https://github.com/EmmanuelKeifala/LMS-SERVER#readme",
+	"dependencies": {
+		"@sanity/client": "^6.4.12",
+		"@types/bcryptjs": "^2.4.3",
+		"@types/cookie-parser": "^1.4.4",
+		"@types/cors": "^2.8.14",
+		"@types/express": "^4.17.17",
+		"@types/jsonwebtoken": "^9.0.2",
+		"@types/node": "^20.5.9",
+		"@types/stripe": "^8.0.417",
+		"bcryptjs": "^2.4.3",
+		"cloudinary": "^1.40.0",
+		"cookie-parser": "^1.4.6",
+		"cors": "^2.8.5",
+		"dotenv": "^16.3.1",
+		"ejs": "^3.1.9",
+		"express": "^4.18.2",
+		"ioredis": "^5.3.2",
+		"jsonwebtoken": "^9.0.2",
+		"mongoose": "^7.5.0",
+		"nodemailer": "^6.9.5",
+		"stripe": "^13.6.0",
+		"ts-node-dev": "^2.0.0",
+		"typescript": "^5.1.6"
+	},
+	"devDependencies": {
+		"@types/ejs": "^3.1.2",
+		"@types/nodemailer": "^6.4.9"
+	}
+}
