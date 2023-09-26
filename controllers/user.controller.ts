@@ -416,6 +416,9 @@ export const pushTicket = CatchAsyncErrors(
         const ticketIndex = organizer.tickets.findIndex(
           (ticket: any) => ticket.code === ticketData.ticketCode,
         );
+        if(!ticketData.selectedTicketTypes[0].price){
+          return next(new ErrorHandler('Price must be indicated', 405));
+        }
 
         if (ticketIndex === -1) {
           // If the ticket is not found, add it to the organizer's tickets
