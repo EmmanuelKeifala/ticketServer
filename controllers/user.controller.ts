@@ -6,8 +6,8 @@ import jwt, {JwtPayload} from 'jsonwebtoken';
 require('dotenv').config();
 import ejs from 'ejs';
 import path from 'path';
-import cloudinary from 'cloudinary';
-import {createClient} from '@sanity/client';
+import cron from 'node-cron';
+import moment from 'moment';
 // File Imports
 import userModel, {IUser} from '../models/user.model';
 import ErrorHandler from '../utils/ErrorHandler';
@@ -758,3 +758,32 @@ export const getUserCreatedTickets = CatchAsyncErrors(
     }
   },
 );
+
+// CRON JOB
+cron.schedule('*/5 * * * *', async () => {
+  console.log('Cron job is running...');
+
+  // Get the current date and time
+  const currentDate = moment();
+
+  try {
+    // Find tickets with a date in the past
+    const expiredTickets = await ticketModel.find({
+      date: {$lt: currentDate.toDate()},
+    });
+
+    if (expiredTickets.length > 0) {
+      console.log(`Deleting ${expiredTickets.length} expired tickets...`);
+
+      // Loop through and delete each expired ticket
+      for (const ticket of expiredTickets) {
+        await ticketModel.deleteOne({_id: ticket._id});
+        console.log(`Deleted ticket with ID: ${ticket._id}`);
+      }
+    } else {
+      console.log('No expired tickets found.');
+    }
+  } catch (error) {
+    console.error('Error while deleting expired tickets:', error);
+  }
+});

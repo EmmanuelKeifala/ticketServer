@@ -7,48 +7,6 @@ import {CatchAsyncErrors} from '../middleware/catchAsyncErrors';
 import ErrorHandler from '../utils/ErrorHandler';
 import ticketModel from '../models/ticket.model';
 
-// Create a new ticket and save it to the database
-// export const createTicket = CatchAsyncErrors(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       // Extract ticket data from the request body
-//       const {
-//         name,
-//         description,
-//         ticketTypes,
-//         location,
-//         date,
-//         time,
-//         image,
-//         organizer,
-//       } = req.body;
-
-//       // Create a new ticket instance using the ticket model
-//       const newTicket = new ticketModel({
-//         name,
-//         description,
-//         ticketTypes,
-//         location,
-//         date,
-//         time,
-//         image,
-//         organizer,
-//       });
-
-//       // Save the new ticket to the database
-//       const savedTicket = await newTicket.save();
-
-//       // Respond with the newly created ticket
-//       res.status(201).json({
-//         success: true,
-//         ticket: savedTicket,
-//       });
-//     } catch (error: any) {
-//       return next(new ErrorHandler(error.message, 500));
-//     }
-//   },
-// );
-
 // Get all tickets from the database
 export const getAllTickets = CatchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
