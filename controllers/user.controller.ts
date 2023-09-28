@@ -793,6 +793,7 @@ cron.schedule('*/5 * * * *', async () => {
 
           // Extract the public ID by removing the file extension
           const publicId = filename.split('.')[0];
+          console.log(publicId);
 
           if (publicId) {
             // Use the Cloudinary SDK to delete the image by public ID
