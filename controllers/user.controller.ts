@@ -8,6 +8,7 @@ import ejs from 'ejs';
 import path from 'path';
 import cron from 'node-cron';
 import moment from 'moment';
+import cloudinary from 'cloudinary';
 // File Imports
 import userModel, {IUser} from '../models/user.model';
 import ErrorHandler from '../utils/ErrorHandler';
@@ -783,6 +784,19 @@ cron.schedule('*/5 * * * *', async () => {
 
         // Compare the ticket's date with the current date
         if (ticketDate.isBefore(currentDate)) {
+          const imageUrl = ticket.image;
+          // Split the URL by '/'
+          const parts = imageUrl.split('/');
+
+          // The public ID is usually the second-to-last part of the URL
+          const publicId = parts[parts.length - 2];
+          if (publicId) {
+            // Use the Cloudinary SDK to delete the image by public ID
+            await cloudinary.v2.uploader.destroy(publicId);
+            console.log(
+              `Deleted image with public ID: ${publicId} from Cloudinary`,
+            );
+          }
           // The ticket is expired, delete it
           await ticketModel.deleteOne({_id: ticket._id});
           console.log(`Deleted expired ticket with ID: ${ticket._id}`);
