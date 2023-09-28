@@ -770,9 +770,10 @@ cron.schedule('*/5 * * * *', async () => {
   const currentDate = moment();
 
   try {
+        const oneDayAfterCurrentDate = currentDate.clone().add(1, 'days');
     // Find tickets with a date in the past
     const expiredTickets = await ticketModel.find({
-      date: {$lt: currentDate.toDate()},
+      date: {$lt: oneDayAfterCurrentDate.toDate()},
     });
 
     if (expiredTickets.length > 0) {
