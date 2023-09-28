@@ -67,6 +67,7 @@ export const getPartyDetails = CatchAsyncErrors(
         organizer: 1,
         date: 1,
         time: 1,
+        followUps: 1,
       });
       res.status(200).json({
         success: true,
