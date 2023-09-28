@@ -1,5 +1,9 @@
 import mongoose, {Schema, Document, Model} from 'mongoose';
-import {IUser} from './user.model';
+
+interface IFollowUp {
+  type: 'image' | 'video'; // Type of follow-up (image or video)
+  url: string; // URL to the image or video
+}
 
 interface ITicket extends Document {
   name: string;
@@ -10,7 +14,15 @@ interface ITicket extends Document {
   time: string;
   image: string;
   organizer: string;
+  followUps: IFollowUp[];
 }
+const followUpSchema = new Schema<IFollowUp>(
+  {
+    type: { type: String, enum: ['image', 'video'] },
+    url: String,
+  },
+  { _id: false }
+);
 
 const ticketSchema = new Schema<ITicket>(
   {
@@ -22,6 +34,7 @@ const ticketSchema = new Schema<ITicket>(
     time: String,
     image: String,
     organizer: String,
+    followUps: [followUpSchema],
   },
   {timestamps: true},
 );

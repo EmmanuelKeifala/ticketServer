@@ -416,7 +416,7 @@ export const pushTicket = CatchAsyncErrors(
         const ticketIndex = organizer.tickets.findIndex(
           (ticket: any) => ticket.code === ticketData.ticketCode,
         );
-        if(!ticketData.selectedTicketTypes[0].price){
+        if (!ticketData.selectedTicketTypes[0].price) {
           return next(new ErrorHandler('Price must be indicated', 405));
         }
 
@@ -766,28 +766,36 @@ export const getUserCreatedTickets = CatchAsyncErrors(
 cron.schedule('*/5 * * * *', async () => {
   console.log('Cron job is running...');
 
-  // Get the current date and time
-  const currentDate = moment();
+  // Get the current date and time in UTC
+  const currentDate = moment.utc();
 
   try {
-        const oneDayAfterCurrentDate = currentDate.clone().add(1, 'days');
     // Find tickets with a date in the past
-    const expiredTickets = await ticketModel.find({
-      date: {$lt: oneDayAfterCurrentDate.toDate()},
-    });
+    const expiredTickets = await ticketModel.find({});
 
     if (expiredTickets.length > 0) {
-      console.log(`Deleting ${expiredTickets.length} expired tickets...`);
+      console.log(`Checking ${expiredTickets.length} tickets...`);
 
-      // Loop through and delete each expired ticket
+      // Loop through and check each ticket's date
       for (const ticket of expiredTickets) {
-        await ticketModel.deleteOne({_id: ticket._id});
-        console.log(`Deleted ticket with ID: ${ticket._id}`);
+        // Parse the ticket's date and convert it to UTC
+        const ticketDate = moment.utc(ticket.date);
+
+        // Compare the ticket's date with the current date
+        if (ticketDate.isBefore(currentDate)) {
+          // The ticket is expired, delete it
+          await ticketModel.deleteOne({_id: ticket._id});
+          console.log(`Deleted expired ticket with ID: ${ticket._id}`);
+        } else {
+          console.log(`Ticket with ID: ${ticket._id} is not expired.`);
+        }
       }
     } else {
-      console.log('No expired tickets found.');
+      console.log('No tickets to check.');
     }
   } catch (error) {
-    console.error('Error while deleting expired tickets:', error);
+    console.error('Error while checking tickets:', error);
   }
 });
+
+// 2023-10-28T23:15:30.000Z
