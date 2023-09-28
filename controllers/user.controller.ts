@@ -788,8 +788,12 @@ cron.schedule('*/5 * * * *', async () => {
           // Split the URL by '/'
           const parts = imageUrl.split('/');
 
-          // The public ID is usually the second-to-last part of the URL
-          const publicId = parts[parts.length - 2];
+          // Get the last part, which is the filename
+          const filename = parts[parts.length - 1];
+
+          // Extract the public ID by removing the file extension
+          const publicId = filename.split('.')[0];
+
           if (publicId) {
             // Use the Cloudinary SDK to delete the image by public ID
             await cloudinary.v2.uploader.destroy(publicId);

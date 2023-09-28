@@ -83,18 +83,24 @@ export const followParty = CatchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     // Swap req and res
     try {
-      const {ticketId, updates} = req.body;
-      // Find the ticket by ID and update it
-      const updatedTicket = await ticketModel.findByIdAndUpdate(
-        ticketId,
-        updates,
-        {
-          new: true,
-        },
-      );
-      if (!updatedTicket) {
-        return next(new ErrorHandler('Ticket not found', 404));
+      const {ticketId, type, url} = req.body;
+      const ticket = await ticketModel.findById(ticketId);
+
+      if (!ticket) {
+        return res.status(404).json({message: 'Ticket not found'});
       }
+
+      // Create a new follow-up object
+      const newFollowUp = {
+        type,
+        url,
+      };
+
+      // Add the follow-up to the ticket's followUps array
+      ticket.followUps.push(newFollowUp);
+
+      // Save the updated ticket with the new follow-up
+      const updatedTicket = await ticket.save();
       res.status(200).json({
         success: true,
         updatedTicket,
