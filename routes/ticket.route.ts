@@ -25,6 +25,6 @@ ticketRouter.post('/search-tickets', searchTickets);
 ticketRouter.post('/ticket-detail', isAuthenticated, getPartyDetails);
 
 // Ticket follows
-ticketRouter.post('/follow-up', followParty);
+ticketRouter.post('/follow-up', isAuthenticated, followParty);
 
 export default ticketRouter;
