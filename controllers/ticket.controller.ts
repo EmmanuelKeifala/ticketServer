@@ -6,6 +6,7 @@ import sanityClient, {createClient} from '@sanity/client';
 import {CatchAsyncErrors} from '../middleware/catchAsyncErrors';
 import ErrorHandler from '../utils/ErrorHandler';
 import ticketModel from '../models/ticket.model';
+import organizerModel from '../models/organizer.model';
 
 // Get all tickets from the database
 export const getAllTickets = CatchAsyncErrors(
@@ -105,6 +106,50 @@ export const followParty = CatchAsyncErrors(
       res.status(200).json({
         success: true,
         updatedTicket,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  },
+);
+// Define a function to normalize ticket type
+function normalizeTicketType(type: string): string {
+  // Remove leading and trailing spaces, and convert to lowercase for case-insensitive comparison
+  return type.trim().toLowerCase();
+}
+
+// Count the ticket types and return the count and the types
+export const countTicketTypes = CatchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const {organizerName} = req.body;
+      // Find the organizer by name
+      const organizer = await organizerModel.findOne({name: organizerName});
+
+      if (!organizer) {
+        return next(new ErrorHandler('Organizer not found', 404));
+      }
+      // Extract the ticket data from the organizer
+      const tickets = organizer.tickets;
+      // Use the same code as before to count ticket types
+      const ticketTypeCounts: {[key: string]: number} = {};
+
+      for (const ticket of tickets) {
+        const normalizedType = normalizeTicketType(ticket.type);
+
+        if (ticketTypeCounts[normalizedType]) {
+          ticketTypeCounts[normalizedType]++;
+        } else {
+          ticketTypeCounts[normalizedType] = 1;
+        }
+      }
+      // Create an array of objects with ticket types as keys and their counts as values
+      const formattedData = Object.keys(ticketTypeCounts).map(type => ({
+        [type]: ticketTypeCounts[type],
+      }));
+      res.status(200).json({
+        success: true,
+        formattedData,
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));

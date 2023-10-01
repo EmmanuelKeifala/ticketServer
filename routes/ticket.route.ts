@@ -7,6 +7,7 @@ import express from 'express';
 
 import {authorizeRoles, isAuthenticated} from '../middleware/auth';
 import {
+  countTicketTypes,
   followParty,
   getAllTickets,
   getPartyDetails,
@@ -26,5 +27,8 @@ ticketRouter.post('/ticket-detail', isAuthenticated, getPartyDetails);
 
 // Ticket follows
 ticketRouter.post('/follow-up', isAuthenticated, followParty);
+
+// Get ticket stats
+ticketRouter.post('/get-stats', countTicketTypes);
 
 export default ticketRouter;
