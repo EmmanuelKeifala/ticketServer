@@ -773,6 +773,24 @@ cron.schedule('*/5 * * * *', async () => {
   try {
     // Find tickets with a date in the past
     const expiredTickets = await ticketModel.find({});
+    const ticketsWithFollowUps = await ticketModel.find({
+      'followUps.url': {$exists: true},
+    });
+
+    for (const ticket of ticketsWithFollowUps) {
+      for (const followUp of ticket.followUps) {
+        if (followUp.url) {
+          // Extract the public ID from the Cloudinary URL
+          const parts = followUp.url.split('/');
+          // Get the last part, which is the filename
+          const filename = parts[parts.length - 1];
+
+          const publicId = filename.split('.')[0];
+          // Delete the file from Cloudinary using the public ID
+          await cloudinary.v2.uploader.destroy(publicId);
+        }
+      }
+    }
 
     if (expiredTickets.length > 0) {
       console.log(`Checking ${expiredTickets.length} tickets...`);
@@ -793,7 +811,6 @@ cron.schedule('*/5 * * * *', async () => {
 
           // Extract the public ID by removing the file extension
           const publicId = filename.split('.')[0];
-          console.log(publicId);
 
           if (publicId) {
             // Use the Cloudinary SDK to delete the image by public ID
