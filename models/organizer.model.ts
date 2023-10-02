@@ -7,6 +7,7 @@ interface ITicket extends Document {
   price: any;
   createdAt: Date; // Adjust the data type to Date
   isScanned: boolean;
+  ticketId: string;
 }
 
 interface IOrganizer extends Document {
@@ -20,6 +21,7 @@ const TicketSchema = new Schema<ITicket>(
     type: String,
     userId: Schema.Types.ObjectId,
     price: Number,
+    ticketId: String,
     createdAt: {type: Date, default: Date.now}, // Use the default option to generate createdAt
     isScanned: {type: Boolean, default: false}, // Use the default option to generate isScanned
   },

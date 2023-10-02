@@ -430,6 +430,7 @@ export const pushTicket = CatchAsyncErrors(
             price: ticketData.selectedTicketTypes[0].price,
             createdAt: Date.now(),
             isScanned: false,
+            ticketId: ticketData.partyId,
           });
           await organizer.save();
         }
@@ -442,6 +443,8 @@ export const pushTicket = CatchAsyncErrors(
               code: ticketData.ticketCode,
               type: ticketData.selectedTicketTypes[0].type, // Adjust as needed
               userId: ticketData.userId,
+              price: ticketData.selectedTicketTypes[0].price,
+              ticketId: ticketData.partyId,
             },
           ],
         });
