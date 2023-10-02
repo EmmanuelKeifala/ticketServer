@@ -126,19 +126,23 @@ function normalizeTicketType(type: string): string {
 }
 
 // Count the ticket types and return the count and the types
+// Count the ticket types and return the count and the types
 export const countTicketTypes = CatchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const {organizerName} = req.body;
-      // Find the organizer by name
-      const organizer = await organizerModel.findOne({name: organizerName});
+      const {ticketId} = req.body; // Get the ticketId from the request body
+
+      // Find the organizer by ticketId
+      const organizer = await organizerModel.findOne({
+        'tickets.ticketId': ticketId,
+      });
 
       if (!organizer) {
         return next(new ErrorHandler('Organizer not found', 404));
       }
+
       // Extract the ticket data from the organizer
       const tickets = organizer.tickets;
-      // Use the same code as before to count ticket types
       const ticketTypeCounts: {[key: string]: number} = {};
 
       for (const ticket of tickets) {
@@ -150,10 +154,12 @@ export const countTicketTypes = CatchAsyncErrors(
           ticketTypeCounts[normalizedType] = 1;
         }
       }
+
       // Create an array of objects with ticket types as keys and their counts as values
       const formattedData = Object.keys(ticketTypeCounts).map(type => ({
         [type]: ticketTypeCounts[type],
       }));
+
       res.status(200).json({
         success: true,
         formattedData,
