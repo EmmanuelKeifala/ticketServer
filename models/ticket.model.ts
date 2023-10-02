@@ -19,7 +19,7 @@ interface ITicket extends Document {
 }
 const followUpSchema = new Schema<IFollowUp>(
   {
-    type: {type: String, enum: ['image', 'video']},
+    type: {type: String, enum: ['image', 'video', 'text']},
     url: String,
     text: String,
   },

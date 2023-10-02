@@ -93,13 +93,20 @@ export const followParty = CatchAsyncErrors(
       }
 
       // Create a new follow-up object
-      const newFollowUp = {
-        type,
-        url,
-        text,
-      };
-      // Add the follow-up to the ticket's followUps array
-      ticket.followUps.push(newFollowUp);
+      if (url) {
+        const newFollowUp = {
+          type,
+          url,
+        };
+        ticket.followUps.push(newFollowUp);
+      }
+      if (text) {
+        const textFollowUp = {
+          type,
+          text,
+        };
+        ticket.followUps.push(textFollowUp);
+      }
 
       // Save the updated ticket with the new follow-up
       const updatedTicket = await ticket.save();
