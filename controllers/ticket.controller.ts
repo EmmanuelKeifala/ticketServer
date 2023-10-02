@@ -85,7 +85,7 @@ export const followParty = CatchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     // Swap req and res
     try {
-      const {ticketId, type, url} = req.body;
+      const {ticketId, type, url, text} = req.body;
       const ticket = await ticketModel.findById(ticketId);
 
       if (!ticket) {
@@ -96,8 +96,8 @@ export const followParty = CatchAsyncErrors(
       const newFollowUp = {
         type,
         url,
+        text,
       };
-
       // Add the follow-up to the ticket's followUps array
       ticket.followUps.push(newFollowUp);
 
