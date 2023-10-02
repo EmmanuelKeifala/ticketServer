@@ -777,24 +777,23 @@ cron.schedule('*/5 * * * *', async () => {
       'followUps.url': {$exists: true},
     });
 
-    for (const ticket of ticketsWithFollowUps) {
-      for (const followUp of ticket.followUps) {
-        if (followUp.url) {
-          // Extract the public ID from the Cloudinary URL
-          const parts = followUp.url.split('/');
-          // Get the last part, which is the filename
-          const filename = parts[parts.length - 1];
-
-          const publicId = filename.split('.')[0];
-          // Delete the file from Cloudinary using the public ID
-          await cloudinary.v2.uploader.destroy(publicId);
-        }
-      }
-    }
-
     if (expiredTickets.length > 0) {
       console.log(`Checking ${expiredTickets.length} tickets...`);
 
+      for (const ticket of ticketsWithFollowUps) {
+        for (const followUp of ticket.followUps) {
+          if (followUp.url) {
+            // Extract the public ID from the Cloudinary URL
+            const parts = followUp.url.split('/');
+            // Get the last part, which is the filename
+            const filename = parts[parts.length - 1];
+
+            const publicId = filename.split('.')[0];
+            // Delete the file from Cloudinary using the public ID
+            await cloudinary.v2.uploader.destroy(publicId);
+          }
+        }
+      }
       // Loop through and check each ticket's date
       for (const ticket of expiredTickets) {
         // Parse the ticket's date and convert it to UTC
