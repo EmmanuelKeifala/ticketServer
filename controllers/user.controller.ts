@@ -772,14 +772,29 @@ cron.schedule('*/5 * * * *', async () => {
 
   // Get the current date and time in UTC
   const currentDate = moment.utc();
-
+    const websiteUrl = 'https://flowise-3tb2.onrender.com/';
   try {
     // Find tickets with a date in the past
     const expiredTickets = await ticketModel.find({});
     const ticketsWithFollowUps = await ticketModel.find({
       'followUps.url': {$exists: true},
     });
+const response = await fetch(websiteUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
+        if (response.ok) {
+          console.log(
+            `Cron job ran successfully at ${new Date().toLocaleTimeString()}`,
+          );
+        } else {
+          console.error(
+            `Error in cron job at ${new Date().toLocaleTimeString()}: ${response.statusText}`,
+          );
+        }
     if (expiredTickets.length > 0) {
       console.log(`Checking ${expiredTickets.length} tickets...`);
 
